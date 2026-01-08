@@ -1,10 +1,9 @@
-
 from appwrite.client import Client
 from appwrite.services.tables_db import TablesDB
 from appwrite.id import ID
 
 client = Client()
-client.set_endpoint('https://<REGION>.cloud.appwrite.io/v1')
+client.set_endpoint('https://fra.cloud.appwrite.io/v1')
 client.set_project('just-a-game')
 client.set_key('Python_Game')
 
