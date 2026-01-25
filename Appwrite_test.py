@@ -4,6 +4,7 @@ from appwrite.id import ID
 from appwrite.query import Query
 from names_generator import generate_name
 import random
+import datetime
 
 
 client = Client()
@@ -29,7 +30,7 @@ def prepare_database():
   scoreTable = tablesDB.get_table(database_id='695ff9080035072e95c4', table_id='scores')
 
 
-def create_score(new_score):
+def add_score(new_score):
   
   tablesDB.create_row(
     database_id=scoreDatabase['$id'],
@@ -41,21 +42,19 @@ def create_score(new_score):
 
 
 
-
-
-if __name__ == "__main__":
-  prepare_database()
+prepare_database()
 
 
 
 def add_test_scores(count=10):
 
   for i in range(count):
+    random.seed(datetime.datetime.now()),
     testScore = {
-      'Name': f"{generate_name(seed=random.randint(0, 9999))}{random.randint(0, 9999)}",
+      'Name': f"{generate_name(seed=str(datetime.datetime.now()))}{random.randint(0, 9999)}",
       'Score': random.randint(0, 9999)
     }
-    tablesDB.create_score(data=testScore)
+    tablesDB.add_score(data=testScore)
 
 
 def get_scores():
@@ -76,15 +75,28 @@ def get_top_scores(limit):
     table_id=scoreTable['$id'],
     queries=[
       Query.order_desc("Score"),
-      Query.limit(limit)
+      Query.limit(limit),
+      Query.order_asc("Score")
       ])
   return scores
   
 
+
+
+
+
+
+
 if __name__ == "__main__":
-  scores = get_top_scores()
 
-print("\nScores:\n\n\n")
-for score in scores['rows']:
-  print(f"{score['Name']}: {score['Score']}\n")
+  range_top = 10
+  i = range_top
 
+
+  scores = get_top_scores(range_top)
+
+
+  print("\nScores:\n\n")
+  for score in scores['rows']:
+    print(f"{i}. {score['Name']}: {score['Score']}\n")
+    i-=1
